@@ -1,43 +1,42 @@
-[![Leia em Português](https://img.shields.io/badge/Leia%20em%20Portugu%C3%AA-%E2%9C%94-red)](README.pt.md)
+[![Read in English](https://img.shields.io/badge/Read%20in%20English-%E2%9C%94-blue)](README.md)
 
+# **Remoção de Rótulos de Sensibilidade para Migração com Azure Information Protection (AIP)**
 
-# **Removal of Sensitivity Labels for Migration with Azure Information Protection (AIP)**
+## **Objetivo**
+O objetivo deste estudo de caso é demonstrar como remover rótulos de sensibilidade e proteção de arquivos protegidos com Azure Information Protection (AIP), para permitir uma migração limpa dos arquivos, sem impactar a segurança ou integridade dos dados, especialmente em arquivos locais.
 
-## **Objective**
-The purpose of this case study is to demonstrate how to remove sensitivity labels and protection from files protected with Azure Information Protection (AIP), enabling a clean migration of files without impacting data security or integrity, especially for local files.
+## **Motivo da Remoção de Rótulos**
+Durante o processo de migração de arquivos de um ambiente para outro, a presença de rótulos de sensibilidade pode causar falhas de acesso, problemas de segurança e perda de permissões adequadas. Para evitar esses problemas, é essencial remover os rótulos de sensibilidade e a proteção dos arquivos antes da migração, particularmente para arquivos locais, que são mais suscetíveis a problemas de compatibilidade durante o processo.
 
-## **Reason for Removing Labels**
-During the process of migrating files from one environment to another, the presence of sensitivity labels can cause access failures, security issues, and loss of proper permissions. To avoid these problems, it is essential to remove sensitivity labels and file protection before migration, particularly for local files that are more prone to compatibility issues during the process.
+## **Ferramentas Utilizadas**
+- **Microsoft Purview Information Protection Client**: Cliente necessário para manipular rótulos e proteção de arquivos no **Azure Information Protection**.
+- **PowerShell**: Utilizado para automatizar a remoção de rótulos e proteção dos arquivos.
 
-## **Tools Used**
-- **Microsoft Purview Information Protection Client**: Client required to manage labels and protection on files in **Azure Information Protection**.
-- **PowerShell**: Used to automate the removal of labels and protection from files.
+## **Passos para Remover Rótulos e Proteção**
 
-## **Steps to Remove Labels and Protection**
+### **1. Instalar o Cliente AIP**
 
-### **1. Install the AIP Client**
-
-The **Microsoft Purview Information Protection client** can be downloaded from the following link:
+O **Microsoft Purview Information Protection client** pode ser baixado do seguinte link:
 
 [Microsoft Purview Information Protection client](https://www.microsoft.com/en-us/download/details.aspx?id=53018).
 
-### **2. Connect to the AIP Service**
+### **2. Conectar ao Serviço AIP**
 
-To connect to the AIP service, use the following command in PowerShell:
+Para conectar-se ao serviço AIP, utilize o seguinte comando no PowerShell:
 
 ```powershell
 Connect-AipService
 ```
 
-### **3. Check the Label Status on the File**
+### **3. Verificar o Status dos Rótulos no Arquivo**
 
-Use the **`Get-FileStatus`** command to check if the file has labels applied and if it is protected. This command will return a detailed report about the file's status:
+Use o comando **`Get-FileStatus`** para verificar se o arquivo tem rótulos aplicados e se está protegido. O comando exibe um relatório detalhado sobre o status do arquivo:
 
 ```powershell
 Get-FileStatus .\doc.docx
 ```
 
-**Expected Output:**
+**Saída Esperada:**
 
 ```plaintext
 FileName          : C:\repo\doc.docx
@@ -56,29 +55,29 @@ IssuedTo          : admin@monga.dev.br
 ContentId         : 4126380d-8200-426f-8aa9-1a04cf89f4e0
 ```
 
-### **4. Remove Labels and Protection from the File**
+### **4. Remover Rótulos e Proteção do Arquivo**
 
-To remove both the label and the protection from the file, use the following command:
+Para remover tanto o rótulo quanto a proteção do arquivo, use o seguinte comando:
 
 ```powershell
-Remove-FileLabel .\doc.docx -RemoveProtection -RemoveLabel -JustificationMessage "Removing labels for migration"
+Remove-FileLabel .\doc.docx -RemoveProtection -RemoveLabel -JustificationMessage "Removendo rótulos para migração"
 ```
 
-This command will:
+Esse comando irá:
 
-- Remove RMS protection (`-RemoveProtection`).
-- Remove the sensitivity label (`-RemoveLabel`).
-- Log a justification message for the removal (`-JustificationMessage`).
+- Remover a proteção RMS (`-RemoveProtection`).
+- Remover o rótulo de sensibilidade (`-RemoveLabel`).
+- Registrar uma mensagem justificativa para a remoção (`-JustificationMessage`).
 
-### **5. Verify the Status After Removal**
+### **5. Verificar o Status Após a Remoção**
 
-After removal, run the **`Get-FileStatus`** command again to confirm that the labels and protection have been removed:
+Após a remoção, execute o comando **`Get-FileStatus`** novamente para confirmar que os rótulos e a proteção foram removidos:
 
 ```powershell
 Get-FileStatus .\doc.docx
 ```
 
-**Expected Output:**
+**Saída Esperada:**
 
 ```plaintext
 FileName          : C:\repo\doc.docx
@@ -97,35 +96,35 @@ IssuedTo          :
 ContentId         :
 ```
 
-# **Automating the Removal of Labels and Protection with PowerShell**
+# **Automatizando Remoção de Rótulos e Proteção com PowerShell**
 
-## **Batch Removal Automation Script**
+## **Script de Automação para Remoção em Lote**
 
-The script [Remove-FileLabel.ps1](./Remove-FileLabel.ps1) automates the process of removing labels and protection from files using **Azure Information Protection** (AIP). It generates two CSV reports: one before removal and one after, allowing you to track the changes made to the files.
+O script [Remove-FileLabel.ps1](./Remove-FileLabel.ps1) automatiza o processo de remoção de rótulos e proteção de arquivos usando **Azure Information Protection** (AIP). Ele gera dois relatórios em formato CSV: um antes da remoção e outro após, permitindo que você acompanhe as mudanças feitas nos arquivos.
 
-## **Execution Instructions**
+## **Instruções de Execução**
 
-1. Open **PowerShell** with administrator privileges.
-2. Navigate to the directory where the `Remove-FileLabel.ps1` script is located.
-3. Run the script with the following command:
+1. Abra o **PowerShell** com permissões de administrador.
+2. Navegue até o diretório onde o script `Remove-FileLabel.ps1` está localizado.
+3. Execute o script com o comando:
 
    ```powershell
    .\Remove-FileLabel.ps1
    ```
 
-## **What the Script Does**
+## **O que o Script Faz**
 
-- Connects to the **Azure Information Protection** service.
-- Generates two CSV reports:
-  - **StatusReport_Before.csv**: Contains information about the files before the labels and protection are removed.
-  - **StatusReport_After.csv**: Contains information about the files after the labels and protection are removed.
-- Removes the labels and protection from **all files** in the specified directory.
+- Conecta-se ao serviço **Azure Information Protection**.
+- Gera dois relatórios CSV:
+  - **StatusReport_Before.csv**: Contém informações sobre os arquivos antes de remover os rótulos e a proteção.
+  - **StatusReport_After.csv**: Contém informações sobre os arquivos após a remoção dos rótulos e proteção.
+- Remove os rótulos e proteção de **todos os arquivos** dentro do diretório especificado.
 
-## **Example of Generated Reports**
+## **Exemplo de Relatórios Gerados**
 
 ### **StatusReport_Before.csv**
 
-Example contents:
+Exemplo de conteúdo:
 
 | FileName                                      | IsLabeled | MainLabelId       | MainLabelName | SubLabelName | LabelingMethod | IsRMSProtected | RMSTemplateName        |
 |-----------------------------------------------|-----------|-------------------|---------------|--------------|----------------|----------------|------------------------|
@@ -140,7 +139,7 @@ Example contents:
 
 ### **StatusReport_After.csv**
 
-Example contents:
+Exemplo de conteúdo:
 
 | FileName                                      | IsLabeled | MainLabelId | MainLabelName | SubLabelName | IsRMSProtected | RMSTemplateName |
 |-----------------------------------------------|-----------|-------------|---------------|--------------|----------------|-----------------|
@@ -153,9 +152,10 @@ Example contents:
 | C:\repo\protect\lab\dc\dc03.docx              | False     |             |               |              | False          |                 |
 | C:\repo\protect\lab\dc\dcb\dcb01.docx         | False     |             |               |              | False          |                 |
 
-## **Important Notes**
 
-- **AIP Client**: The script will only work if the **Microsoft Purview Information Protection client** is installed and the AIP service is accessible.
-- **CSV Reports**: These reports are saved in the `C:\temp` directory by default, but you can modify the path in the script.
-- **Automation Caution**: The script removes **all labels and protection** from the files in the specified directory. Make sure to verify the files before running the script.
+## **Observações Importantes**
+
+- **Cliente AIP**: O script só funcionará se o **Microsoft Purview Information Protection client** estiver instalado e o serviço AIP acessível.
+- **Relatórios CSV**: São salvos no diretório `C:\temp` por padrão, mas você pode modificar o caminho no script.
+- **Cuidado com a Automação**: O script remove **todos os rótulos e proteção** dos arquivos no diretório especificado. Verifique os arquivos antes de rodá-lo.
 
